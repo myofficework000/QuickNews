@@ -14,6 +14,8 @@ import com.example.newsapp.model.repository.RemoteRepository
 import com.example.newsapp.model.repository.Repository
 import com.example.newsapp.viewmodel.NewsViewModel
 import com.example.newsapp.viewmodel.createFactory
+import java.time.Instant
+import java.time.LocalDateTime
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -25,6 +27,16 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         initViewModel()
         setUpObserver()
+
+        binding.btnSearch.setOnClickListener { _ ->
+            binding.edtSearch.text.toString().takeIf { x -> x.isNotBlank() }?.let {
+                viewModel.searchNews(
+                    it,
+                    System.currentTimeMillis() - 14 * 86400000, // This is 2 weeks
+                    System.currentTimeMillis()
+                )
+            }
+        }
     }
 
     private fun setUpObserver() {
@@ -33,7 +45,13 @@ class MainActivity : AppCompatActivity() {
                 binding.progressBar.visibility = View.VISIBLE
             } else {
                 binding.progressBar.visibility = View.GONE
+
+
             }
+        }
+
+        viewModel.searchedNews.observe(this) {
+            binding.rvNews.adapter = NewsRvAdapter(this, it)
         }
 
         viewModel.latestNews.observe(this) {
