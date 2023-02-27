@@ -1,7 +1,6 @@
 package com.example.newsapp.model.repository
 
 import com.example.newsapp.model.remote.ApiService
-import retrofit2.http.Query
 
 class RemoteRepository(private val apiService: ApiService) {
 
