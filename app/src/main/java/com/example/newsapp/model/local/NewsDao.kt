@@ -27,6 +27,7 @@ interface NewsDao {
             (:category IS :category) AND
             (:country IS :country)
     """)
+
     fun getOldNews(
         start_date: Long,
         end_date: Long,
@@ -34,4 +35,11 @@ interface NewsDao {
         country: String? = null,
         language: String? = null
     ): List<OldNews>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun saveNewsByRegions(news: List<OldNews>)
+
+    @Query("SELECT id, title, description, author, url, image, publishedAt as published, content, language, region FROM NewsByRegions WHERE region = :region ")
+    fun getNewsByRegion(region: String): LiveData<List<News>>
+
 }

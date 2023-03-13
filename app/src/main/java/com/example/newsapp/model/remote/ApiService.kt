@@ -20,4 +20,9 @@ interface ApiService {
         @Query("country") country: String? = null,
         @Query("language") language: String? = null
     ): Call<NewsResponse>
+
+    @GET(END_POINT_SEARCH)
+    fun getNewsByRegion(
+        @Query("country") country: String,
+    ):Call<NewsResponse>
 }

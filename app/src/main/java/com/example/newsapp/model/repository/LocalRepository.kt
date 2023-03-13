@@ -1,7 +1,9 @@
 package com.example.newsapp.model.repository
 
+import androidx.lifecycle.LiveData
 import com.example.newsapp.model.local.AppDatabase
 import com.example.newsapp.model.remote.data.News
+import com.example.newsapp.model.remote.data.NewsResponse
 import com.example.newsapp.model.remote.data.OldNews
 import com.example.newsapp.utils.formatDate
 
@@ -26,4 +28,8 @@ class LocalRepository(private val appDatabase: AppDatabase) {
         country,
         language
     )
+
+    fun getNewsByRegion() =  appDatabase.getNewsDao().getNews()
+
+    fun saveNewsByRegion(news: List<News>) = appDatabase.getNewsDao().saveNews(news)
 }
