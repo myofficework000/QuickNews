@@ -3,14 +3,12 @@ package com.example.newsapp.model.repository
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.newsapp.model.remote.data.News
-import com.example.newsapp.model.remote.data.NewsResponse
 import com.example.newsapp.model.remote.data.OldNews
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import io.reactivex.rxjava3.schedulers.Schedulers
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 
 class Repository(
-    val localRepository: LocalRepository,
+    private val localRepository: LocalRepository,
     private val remoteRepository: RemoteRepository
 ) : IRepository {
 
@@ -22,28 +20,19 @@ class Repository(
         return localRepository.getLatestNews()
     }
 
-    override fun updateLatestNews() {
-        val call: Call<NewsResponse> = remoteRepository.loadLatestNews()
-        call.enqueue(object : Callback<NewsResponse> {
-            override fun onResponse(call: Call<NewsResponse>, response: Response<NewsResponse>) {
+    override fun updateLatestNews() = remoteRepository.loadLatestNews()
+        .observeOn(Schedulers.io())
+        .subscribeOn(AndroidSchedulers.mainThread())
+        .subscribe(
+            {
                 isProcessing.postValue(false)
-                if (!response.isSuccessful) {
-                    return
-                }
-
-                val newsResponse: NewsResponse = response.body() ?: return
-
-                if (newsResponse.status == "ok") {
-                    localRepository.saveNews(newsResponse.news)
-                }
-            }
-
-            override fun onFailure(call: Call<NewsResponse>, t: Throwable) {
+                if (it.status == "ok") localRepository.saveNews(it.news)
+            },
+            {
                 isProcessing.postValue(false)
-                t.printStackTrace()
+                it.printStackTrace()
             }
-        })
-    }
+        )
 
     override fun searchNews(
         keywords: String,
@@ -59,19 +48,16 @@ class Repository(
         category,
         country,
         language
-    ).enqueue(object : Callback<NewsResponse> {
-        override fun onResponse(call: Call<NewsResponse>, response: Response<NewsResponse>) {
+    )
+        .observeOn(Schedulers.io())
+        .subscribeOn(AndroidSchedulers.mainThread())
+        .subscribe({
             isProcessing.postValue(false)
-            if (!response.isSuccessful) return
-            val newsResponse: NewsResponse = response.body() ?: return
-            if (newsResponse.status == "ok")
-                localRepository.saveOldNews(newsResponse.news.map { OldNews.fromNews(it) })
-            searchedNews.postValue(newsResponse.news)
-        }
-
-        override fun onFailure(call: Call<NewsResponse>, t: Throwable) {
+            if (it.status == "ok")
+                localRepository.saveOldNews(it.news.map { x->OldNews.fromNews(x) })
+            searchedNews.postValue(it.news)
+        },{
             isProcessing.postValue(false)
-            t.printStackTrace()
-        }
-    }).also { isProcessing.postValue(true) }
+            it.printStackTrace()
+        }).also { isProcessing.postValue(true) }
 }
