@@ -21,7 +21,7 @@
         android:textColorHint="@color/primary_color"
         android:textSize="22sp"
         app:layout_constraintEnd_toStartOf="@id/frame"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@id/spinnerLayout"
         app:layout_constraintTop_toTopOf="parent" />
 
     <FrameLayout
@@ -53,18 +53,18 @@
     <LinearLayout
         android:id="@+id/spinnerLayout"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/svLayout"
+        android:layout_height="0dp"
+        android:background="@drawable/search_bg"
         android:gravity="end"
-        android:background="@drawable/search_bg">
+        app:layout_constraintBottom_toBottomOf="@+id/edtSearch"
+        app:layout_constraintEnd_toStartOf="@+id/edtSearch"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/edtSearch">
 
         <androidx.appcompat.widget.AppCompatSpinner
             android:id="@+id/spinnerRegion"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:backgroundTint="@color/black" />
 
     </LinearLayout>
