@@ -10,7 +10,7 @@ interface IRepository {
     fun getLatestNews(): LiveData<List<News>>
 
     fun updateLatestNews(): Disposable
-    fun getNewsByRegion(region: String) : LiveData<List<News>>
+    fun getNewsByRegion(region: String) : Disposable
 
     fun searchNews(
         keywords: String,

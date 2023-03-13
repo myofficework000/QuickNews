@@ -35,25 +35,16 @@ class Repository(
             }
         )
 
-    override fun getNewsByRegion(region: String): LiveData<List<News>> {
-        val call: Call<NewsResponse> = remoteRepository.getNewsbyRegion(region)
-        call.enqueue(object : Callback<NewsResponse> {
-            override fun onResponse(call: Call<NewsResponse>, response: Response<NewsResponse>) {
-                if (response.isSuccessful) {
-                    val newsResponse: NewsResponse = response.body() ?: return
-                    if(newsResponse.status == "ok")
-                    regionNews.postValue(newsResponse.news)
-                }
-            }
-
-            override fun onFailure(call: Call<NewsResponse>, t: Throwable) {
-                isProcessing.postValue(false)
-                t.printStackTrace()
-            }
-
+    override fun getNewsByRegion(region: String) = remoteRepository.getNewsbyRegion(region)
+        .observeOn(Schedulers.io())
+        .subscribeOn(AndroidSchedulers.mainThread())
+        .subscribe({
+            if(it.status == "ok") regionNews.postValue(it.news)
+            isProcessing.postValue(false)
+        },{
+            isProcessing.postValue(false)
+            it.printStackTrace()
         })
-        return  localRepository.getNewsByRegion()
-    }
 
     override fun searchNews(
         keywords: String,

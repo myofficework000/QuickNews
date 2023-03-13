@@ -6,9 +6,12 @@ import androidx.lifecycle.LiveData
 import com.example.newsapp.model.remote.data.News
 import com.example.newsapp.model.repository.IRepository
 import com.example.newsapp.utils.toNewsDate
+import io.reactivex.rxjava3.disposables.CompositeDisposable
 
 class NewsViewModel(application: Application, private val repository: IRepository) :
     AndroidViewModel(application) {
+
+    private val compositeDisposable = CompositeDisposable()
 
     val newsByRegion: LiveData<List<News>> = repository.regionNews
     val latestNews: LiveData<List<News>> = repository.getLatestNews()
@@ -17,6 +20,7 @@ class NewsViewModel(application: Application, private val repository: IRepositor
 
     fun refreshNews() {
         repository.updateLatestNews()
+            .also { compositeDisposable.add(it) }
     }
 
     fun searchNews(
@@ -34,10 +38,16 @@ class NewsViewModel(application: Application, private val repository: IRepositor
             category,
             country,
             language
-        )
+        ).also { compositeDisposable.add(it) }
     }
 
     fun getNewsByRegion(region: String) {
         repository.getNewsByRegion(region)
+            .also { compositeDisposable.add(it) }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        compositeDisposable.dispose()
     }
 }
