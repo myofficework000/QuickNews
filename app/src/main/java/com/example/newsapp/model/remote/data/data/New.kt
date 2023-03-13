@@ -1,4 +1,4 @@
-package com.example.newsapp.data
+package com.example.newsapp.model.remote.data.data
 
 data class New(
     val author: String,

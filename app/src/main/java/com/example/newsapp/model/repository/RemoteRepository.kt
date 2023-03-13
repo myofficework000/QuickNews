@@ -1,7 +1,9 @@
 package com.example.newsapp.model.repository
 
+import android.media.session.MediaSession.Token
 import com.example.newsapp.model.remote.ApiService
-import retrofit2.http.Query
+import com.example.newsapp.model.remote.Constant.TOKEN
+import com.example.newsapp.model.remote.data.Region
 
 class RemoteRepository(private val apiService: ApiService) {
 
@@ -21,4 +23,6 @@ class RemoteRepository(private val apiService: ApiService) {
         country,
         language
     )
+
+    fun getNewsbyRegion(region: String) = apiService.getNewsByRegion(region)
 }

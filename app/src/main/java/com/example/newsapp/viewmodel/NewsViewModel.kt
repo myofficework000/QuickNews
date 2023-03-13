@@ -10,6 +10,7 @@ import com.example.newsapp.utils.toNewsDate
 class NewsViewModel(application: Application, private val repository: IRepository) :
     AndroidViewModel(application) {
 
+    val newsByRegion: LiveData<List<News>> = repository.regionNews
     val latestNews: LiveData<List<News>> = repository.getLatestNews()
     val searchedNews: LiveData<List<News>> = repository.searchedNews
     val isProcessing: LiveData<Boolean> = repository.isProcessing
@@ -34,5 +35,9 @@ class NewsViewModel(application: Application, private val repository: IRepositor
             country,
             language
         )
+    }
+
+    fun getNewsByRegion(region: String) {
+        repository.getNewsByRegion(region)
     }
 }

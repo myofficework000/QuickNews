@@ -14,6 +14,7 @@ class Repository(
 
     override val isProcessing = MutableLiveData<Boolean>()
     override val searchedNews = MutableLiveData<List<News>>()
+    override val regionNews = MutableLiveData<List<News>>()
 
     override fun getLatestNews(): LiveData<List<News>> {
         updateLatestNews()
@@ -33,6 +34,26 @@ class Repository(
                 it.printStackTrace()
             }
         )
+
+    override fun getNewsByRegion(region: String): LiveData<List<News>> {
+        val call: Call<NewsResponse> = remoteRepository.getNewsbyRegion(region)
+        call.enqueue(object : Callback<NewsResponse> {
+            override fun onResponse(call: Call<NewsResponse>, response: Response<NewsResponse>) {
+                if (response.isSuccessful) {
+                    val newsResponse: NewsResponse = response.body() ?: return
+                    if(newsResponse.status == "ok")
+                    regionNews.postValue(newsResponse.news)
+                }
+            }
+
+            override fun onFailure(call: Call<NewsResponse>, t: Throwable) {
+                isProcessing.postValue(false)
+                t.printStackTrace()
+            }
+
+        })
+        return  localRepository.getNewsByRegion()
+    }
 
     override fun searchNews(
         keywords: String,

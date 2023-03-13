@@ -5,7 +5,6 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.example.newsapp.utils.formatDate
 import com.google.gson.annotations.SerializedName
-import java.text.SimpleDateFormat
 
 @Entity(tableName = "OldNews")
 data class OldNews(

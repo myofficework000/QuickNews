@@ -46,7 +46,29 @@
             android:layout_gravity="center"
             android:elevation="5dp"
             android:src="@drawable/ic_baseline_search_24" />
+
     </FrameLayout>
+
+
+    <LinearLayout
+        android:id="@+id/spinnerLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/svLayout"
+        android:gravity="end"
+        android:background="@drawable/search_bg">
+
+        <androidx.appcompat.widget.AppCompatSpinner
+            android:id="@+id/spinnerRegion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/black" />
+
+    </LinearLayout>
+
 
     <ProgressBar
         android:id="@+id/progressBar"
@@ -216,20 +238,20 @@
     </HorizontalScrollView>
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/cardView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="20dp"
         android:elevation="10dp"
         android:padding="10dp"
         app:cardBackgroundColor="#FFFFFF"
         app:cardCornerRadius="30dp"
-        app:layout_constraintTop_toBottomOf="@id/svLayout">
-
+        app:layout_constraintTop_toBottomOf="@id/spinnerLayout" >
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvNews"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:elevation="10dp"
-            app:layout_constraintTop_toBottomOf="@+id/svLayout" />
+            app:layout_constraintTop_toBottomOf="@+id/spinnerLayout" />
     </androidx.cardview.widget.CardView>
 </androidx.constraintlayout.widget.ConstraintLayout>

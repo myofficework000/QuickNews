@@ -10,6 +10,7 @@ interface IRepository {
     fun getLatestNews(): LiveData<List<News>>
 
     fun updateLatestNews(): Disposable
+    fun getNewsByRegion(region: String) : LiveData<List<News>>
 
     fun searchNews(
         keywords: String,
@@ -22,4 +23,5 @@ interface IRepository {
 
     val isProcessing: MutableLiveData<Boolean>
     val searchedNews: MutableLiveData<List<News>>
+    val regionNews: MutableLiveData<List<News>>
 }
